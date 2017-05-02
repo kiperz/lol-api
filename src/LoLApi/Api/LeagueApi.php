@@ -8,14 +8,12 @@ use LoLApi\Result\ApiResult;
  * Class LeagueApi
  *
  * @package LoLApi\Api
- * @see     https://developer.riotgames.com/api/methods
+ * @see     https://developer.riotgames.com/api-methods/
  */
 class LeagueApi extends BaseApi
 {
     const API_URL_LEAGUE_BY_SUMMONERS_IDS = '/api/lol/{region}/v2.5/league/by-summoner/{summonerIds}';
     const API_URL_LEAGUE_ENTRIES_BY_SUMMONERS_IDS = '/api/lol/{region}/v2.5/league/by-summoner/{summonerIds}/entry';
-    const API_URL_LEAGUE_BY_TEAMS_IDS = '/api/lol/{region}/v2.5/league/by-team/{teamIds}';
-    const API_URL_LEAGUE_ENTRIES_BY_TEAMS_IDS = '/api/lol/{region}/v2.5/league/by-team/{teamIds}/entry';
     const API_URL_LEAGUE_CHALLENGER = '/api/lol/{region}/v2.5/league/challenger';
     const API_URL_LEAGUE_MASTER = '/api/lol/{region}/v2.5/league/master';
 
@@ -39,30 +37,6 @@ class LeagueApi extends BaseApi
     public function getLeagueEntriesBySummonersIds(array $summonerIds = [])
     {
         $url = str_replace('{summonerIds}', implode(',', $summonerIds), self::API_URL_LEAGUE_ENTRIES_BY_SUMMONERS_IDS);
-
-        return $this->callApiUrl($url, []);
-    }
-
-    /**
-     * @param array $teamIds
-     *
-     * @return ApiResult
-     */
-    public function getLeagueByTeamsIds(array $teamIds = [])
-    {
-        $url = str_replace('{teamIds}', implode(',', $teamIds), self::API_URL_LEAGUE_BY_TEAMS_IDS);
-
-        return $this->callApiUrl($url, []);
-    }
-
-    /**
-     * @param array $teamIds
-     *
-     * @return ApiResult
-     */
-    public function getLeagueEntriesByTeamsIds(array $teamIds = [])
-    {
-        $url = str_replace('{teamIds}', implode(',', $teamIds), self::API_URL_LEAGUE_ENTRIES_BY_TEAMS_IDS);
 
         return $this->callApiUrl($url, []);
     }

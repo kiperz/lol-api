@@ -126,20 +126,6 @@ class BaseApiTest extends AbstractApiTest
                     'SEASON2015'
                 ]
             ],
-            [
-                'getTeamApi',
-                'getTeamsBySummonersIds',
-                [
-                    [5]
-                ]
-            ],
-            [
-                'getTeamApi',
-                'getTeamsByTeamsIds',
-                [
-                    [5]
-                ]
-            ],
         ];
     }
 
@@ -180,39 +166,25 @@ class BaseApiTest extends AbstractApiTest
             ],
             [
                 'getSummonerApi',
-                'getSummonersBySummonerNames',
+                'getSummonerBySummonerName',
                 [
-                    ['test']
+                    'test'
                 ]
             ],
             [
                 'getSummonerApi',
-                'getSummonersBySummonerIds',
+                'getSummonerBySummonerId',
                 [
-                    [5]
+                    5
                 ]
             ],
             [
                 'getSummonerApi',
-                'getSummonersMasteriesBySummonerIds',
+                'getSummonerByAccountId',
                 [
-                    [5]
+                    5
                 ]
             ],
-            [
-                'getSummonerApi',
-                'getSummonersNamesBySummonerIds',
-                [
-                    [5]
-                ]
-            ],
-            [
-                'getSummonerApi',
-                'getSummonersRunesBySummonerIds',
-                [
-                    [5]
-                ]
-            ]
         ];
     }
 
@@ -336,24 +308,6 @@ class BaseApiTest extends AbstractApiTest
             [
                 'getLeagueApi',
                 'getLeagueEntriesBySummonersIds',
-                [
-                    [
-                        5
-                    ]
-                ]
-            ],
-            [
-                'getLeagueApi',
-                'getLeagueByTeamsIds',
-                [
-                    [
-                        5
-                    ]
-                ]
-            ],
-            [
-                'getLeagueApi',
-                'getLeagueEntriesByTeamsIds',
                 [
                     [
                         5

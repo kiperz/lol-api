@@ -11,8 +11,10 @@ use LoLApi\Api\CurrentGameApi;
 use LoLApi\Api\FeaturedGamesApi;
 use LoLApi\Api\GameApi;
 use LoLApi\Api\LeagueApi;
+use LoLApi\Api\MasteryApi;
 use LoLApi\Api\MatchApi;
 use LoLApi\Api\MatchListApi;
+use LoLApi\Api\RuneApi;
 use LoLApi\Api\StaticDataApi;
 use LoLApi\Api\StatsApi;
 use LoLApi\Api\StatusApi;
@@ -28,16 +30,29 @@ use LoLApi\Result\ApiResult;
  */
 class ApiClient
 {
-    const REGION_BR = 'br';
+    const REGION_BR   = 'br';
     const REGION_EUNE = 'eune';
-    const REGION_EUW = 'euw';
-    const REGION_KR = 'kr';
-    const REGION_LAN = 'lan';
-    const REGION_LAS = 'las';
-    const REGION_NA = 'na';
-    const REGION_OCE = 'oce';
-    const REGION_RU = 'ru';
-    const REGION_TR = 'tr';
+    const REGION_EUW  = 'euw';
+    const REGION_JP   = 'jp';
+    const REGION_KR   = 'kr';
+    const REGION_LAN  = 'lan';
+    const REGION_LAS  = 'las';
+    const REGION_NA   = 'na';
+    const REGION_OCE  = 'oce';
+    const REGION_TR   = 'tr';
+    const REGION_RU   = 'ru';
+
+    const REGION_BR_ID   = 'br1';
+    const REGION_EUNE_ID = 'eun1';
+    const REGION_EUW_ID  = 'euw1';
+    const REGION_JP_ID   = 'jp1';
+    const REGION_KR_ID   = 'kr';
+    const REGION_LAN_ID  = 'la1';
+    const REGION_LAS_ID  = 'la2';
+    const REGION_NA_ID   = 'na1';
+    const REGION_OCE_ID  = 'oc1';
+    const REGION_TR_ID   = 'tr1';
+    const REGION_RU_ID   = 'ru';
 
     /**
      * @var array
@@ -52,13 +67,31 @@ class ApiClient
         self::REGION_NA,
         self::REGION_OCE,
         self::REGION_RU,
-        self::REGION_TR
+        self::REGION_TR,
+    ];
+
+    public static $regionsWithIds = [
+        self::REGION_BR   => self::REGION_BR_ID,
+        self::REGION_EUNE => self::REGION_EUNE_ID,
+        self::REGION_EUW  => self::REGION_EUW_ID,
+        self::REGION_KR   => self::REGION_KR_ID,
+        self::REGION_LAN  => self::REGION_LAN_ID,
+        self::REGION_LAS  => self::REGION_LAS_ID,
+        self::REGION_NA   => self::REGION_NA_ID,
+        self::REGION_OCE  => self::REGION_OCE_ID,
+        self::REGION_RU   => self::REGION_RU_ID,
+        self::REGION_TR   => self::REGION_TR_ID,
     ];
 
     /**
      * @var string
      */
     protected $region;
+
+    /**
+     * @var bool
+     */
+    protected $endpointStandardization;
 
     /**
      * @var string
@@ -80,19 +113,21 @@ class ApiClient
      * @param string        $apiKey
      * @param CacheProvider $cacheProvider
      * @param Client        $client
+     * @param bool          $endpointStandardization
      *
      * @throws InvalidRegionException
      */
-    public function __construct($region, $apiKey, CacheProvider $cacheProvider = null, Client $client = null)
+    public function __construct($region, $apiKey, CacheProvider $cacheProvider = null, Client $client = null, $endpointStandardization = false)
     {
         if (!in_array($region, self::$availableRegions)) {
             throw new InvalidRegionException(sprintf('Invalid region %s', $region));
         }
 
-        $this->region        = $region;
-        $this->httpClient    = $client ? $client : new Client(['base_uri' => $this->getBaseUrlWithRegion()]);
-        $this->apiKey        = $apiKey;
-        $this->cacheProvider = $cacheProvider ? $cacheProvider : new VoidCache();
+        $this->endpointStandardization = $endpointStandardization;
+        $this->region                  = $region;
+        $this->httpClient              = $client ? $client : new Client();
+        $this->apiKey                  = $apiKey;
+        $this->cacheProvider           = $cacheProvider ? $cacheProvider : new VoidCache();
     }
 
     /**
@@ -184,11 +219,19 @@ class ApiClient
     }
 
     /**
-     * @return TeamApi
+     * @return MasteryApi
      */
-    public function getTeamApi()
+    public function getMasteriesApi()
     {
-        return new TeamApi($this);
+        return new MasteryApi($this);
+    }
+
+    /**
+     * @return RuneApi
+     */
+    public function getRunesApi()
+    {
+        return new RuneApi($this);
     }
 
     /**
@@ -240,10 +283,16 @@ class ApiClient
     }
 
     /**
+     * @param bool $endpointStandardization
+     *
      * @return string
      */
-    public function getBaseUrlWithRegion()
+    public function getBaseUrl($endpointStandardization = false)
     {
+        if ($endpointStandardization === true) {
+            return 'https://' . self::$regionsWithIds[$this->region] . '.api.riotgames.com';
+        }
+
         return 'https://' . $this->region . '.api.pvp.net';
     }
 
@@ -252,7 +301,7 @@ class ApiClient
      */
     public function getGlobalUrl()
     {
-        return 'https://global.api.pvp.net';
+        return 'https://global.api.riotgames.com';
     }
 
     /**
